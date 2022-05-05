@@ -16,8 +16,7 @@
 <scope>test</scope>
 </dependency>
 <!-- für das Praktikum "Integrationstest"-->
-<!--
-dependency>
+<dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
       <version>3.6</version>
@@ -28,8 +27,7 @@ dependency>
       <artifactId>hamcrest-library</artifactId>
       <version>1.3</version>
       <scope>test</scope>
-    </dependency
--->
+    </dependency>
 </dependencies>
 <reporting>
 <plugins>
@@ -40,13 +38,11 @@ dependency>
 <artifactId>maven-surefire-report-plugin</artifactId>
 </plugin>
 <!-- für das Praktikum "Integrationstest"-->
-<!--
-plugin>
+<plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.6</version>
-      </plugin
--->
+      </plugin>
 </plugins>
 </reporting>
 <build>
@@ -65,8 +61,7 @@ plugin>
 </configuration>
 </plugin>
 <!-- für das Praktikum "Integrationstest"-->
-<!--
-plugin>
+<plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.6</version>
@@ -84,8 +79,7 @@ plugin>
             </goals>
           </execution>
         </executions>
-      </plugin
--->
+      </plugin>
 </plugins>
 <pluginManagement>
 <!--
