@@ -1,7 +1,5 @@
 package de.hfu.residents.service;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -20,72 +18,131 @@ public class ResidentServiceMockTest {
 	
 	BaseResidentService residentService = new BaseResidentService();
 	//ResidentRepository residentRepoStub = new ResidentRepositoryStub();
+	ResidentRepository residentRepoMock;
+	
+	
 	@Before
 	public void setResidentRepository() {
-		ResidentRepository residentRepoMock = EasyMock.createMock(ResidentRepository.class);
-		EasyMock.expect(residentService.getFilteredResidentsList(new Resident())).andReturn(new ArrayList<Resident>());
+		residentRepoMock = EasyMock.createMock(ResidentRepository.class);
+		
+		Resident vincent = new Resident("Vincent", "Mattes", "Geißbühlstr. 15", "Balingen", new Date(1998, 2, 10));
+		Resident torben = new Resident("Torben", "Schulz", "Imaginärstr. 1", "Stuttgart", new Date(2000, 1, 1));
+		Resident hans1 = new Resident("Hans", "Schopp", "Neue Straße 2", "Neustadt", new Date(1955, 1, 1));
+		Resident hans2 = new Resident("Hans", "Schopp", "Neue Straße 2", "Neustadt", new Date(1955, 1, 1));
+		
+		List<Resident> listWithAllResidents = new ArrayList<Resident>();
+		listWithAllResidents.add(vincent);
+		listWithAllResidents.add(torben);
+		listWithAllResidents.add(hans1);
+		listWithAllResidents.add(hans2);
+		EasyMock.expect(residentRepoMock.getResidents()).andReturn(listWithAllResidents);		
+		
+		residentService.setResidentRepository(residentRepoMock);		
 	}
+	
 	//GetFilteredResidentList
-	@Test
-	public void testGetFilteredResidentListEmptyFilter() {
-		Resident filter = new Resident();
-		List<Resident> res = residentService.getFilteredResidentsList(filter);
-		assertEquals(res.size(), 4);
-	}
-	@Test
-	public void testGetFilteredResidentListAllSchFamilyName() {
-		Resident filter = new Resident("*", "Sch*", "*", "*", null);
-		List<Resident> res = residentService.getFilteredResidentsList(filter);
-		assertEquals(res.size(), 3);
-	}
-	@Test
-	public void testGetFilteredResidentListAllFilter() {
-		Resident filter = new Resident("*", "*", "*", "*", null);
-		List<Resident> res = residentService.getFilteredResidentsList(filter);
-		assertEquals(res.size(), 4);
-	}
-	@Test
-	public void testGetFilteredResidentListOnlyVincent() {
-		Resident filter = new Resident("Vincent", "Mattes", "Geißbühlstr. 15", "Balingen", new Date(1998, 2, 10));
-		List<Resident> res = residentService.getFilteredResidentsList(filter);
-		assertEquals(res.size(),1);
-		assertEquals(res.get(0).getGivenName(), "Vincent");
-	}
-	
-	@Test
-	public void testGetUniqueResidentWithWildcard()  {
-		Resident result;
-		Resident residentWithWildcard = new Resident("Vin*", "mattes", "geißbühlstr. 15", "balingen", new Date(1998, 2, 10));
-		
-		try {
-			result = residentService.getUniqueResident(residentWithWildcard);
-		} catch (ResidentServiceException e) {
-			assertTrue(true);
+		@Test
+		public void testGetFilteredResidentListEmptyFilter() {
+			EasyMock.replay(residentRepoMock);
+			Resident filter = new Resident();
+			List<Resident> res = residentService.getFilteredResidentsList(filter);
+			assertEquals(res.size(), 4);
+			EasyMock.verify(residentRepoMock);
+		}
+		@Test
+		public void testGetFilteredResidentListAllSchFamilyName() {
+			EasyMock.replay(residentRepoMock);
+			Resident filter = new Resident("*", "Sch*", "*", "*", null);
+			List<Resident> res = residentService.getFilteredResidentsList(filter);
+			assertEquals(res.size(), 3);
+			EasyMock.verify(residentRepoMock);
+		}
+		@Test
+		public void testGetFilteredResidentListAllFilter() {
+			EasyMock.replay(residentRepoMock);
+			Resident filter = new Resident("*", "*", "*", "*", null);
+			List<Resident> res = residentService.getFilteredResidentsList(filter);
+			assertEquals(res.size(), 4);
+			EasyMock.verify(residentRepoMock);
+		}
+		@Test
+		public void testGetFilteredResidentListOnlyVincent() {
+			EasyMock.replay(residentRepoMock);
+			Resident filter = new Resident("Vincent", "Mattes", "Geißbühlstr. 15", "Balingen", new Date(1998, 2, 10));
+			List<Resident> res = residentService.getFilteredResidentsList(filter);
+			assertEquals(res.size(),1);
+			assertEquals(res.get(0).getGivenName(), "Vincent");
+			EasyMock.verify(residentRepoMock);
+		}
+		/*
+		@Test
+		public void testGetUniqueResidentWithWildcardStreet()  {
+			EasyMock.replay(residentRepoMock);
+			Resident result;
+			Resident residentWithWildcard = new Resident("Vincent", "mattes", "geißb*", "balingen", new Date(1998, 2, 10));
+			
+			try {
+				result = residentService.getUniqueResident(residentWithWildcard);
+				System.out.println(result.getGivenName());
+			} catch (ResidentServiceException e) {
+				assertTrue(true);
+			}
+			EasyMock.verify(residentRepoMock);
+		}*/
+		/*
+		@Test
+		public void testGetUniqueResidentWithWildcardPrename()  {
+			EasyMock.replay(residentRepoMock);
+			Resident result;
+			Resident residentWithWildcard = new Resident("Vin*", "", "", "", new Date(1998, 2, 10));
+			
+			try {
+				result = residentService.getUniqueResident(residentWithWildcard);
+			} catch (ResidentServiceException e) {
+				assertTrue(true);
+			}
+			EasyMock.verify(residentRepoMock);
 		}
 		
-	}
-	@Test
-	public void testGetUniqueResidentSuccessVincent() {
-		Resident result = null;
-		Resident filter = new Resident("Vincent", "Mattes", "Geißbühlstr. 15", "Balingen", new Date(1998, 2, 10));
-		
-		try {
-			result = residentService.getUniqueResident(filter);
-		} catch (ResidentServiceException e) {
-			assertTrue(false);
+		@Test
+		public void testGetUniqueResidentWithWildcardSurname()  {
+			EasyMock.replay(residentRepoMock);
+			Resident result;
+			Resident residentWithWildcard = new Resident("Vincent", "matt*", "", "balingen", new Date(1998, 2, 10));
+			
+			try {
+				result = residentService.getUniqueResident(residentWithWildcard);
+			} catch (ResidentServiceException e) {
+				assertTrue(true);
+			}
+			EasyMock.verify(residentRepoMock);
+		}*/
+		@Test
+		public void testGetUniqueResidentSuccessVincent() {
+			EasyMock.replay(residentRepoMock);
+			Resident result = null;
+			Resident filter = new Resident("Vincent", "Mattes", "Geißbühlstr. 15", "Balingen", new Date(1998, 2, 10));
+			
+			try {
+				result = residentService.getUniqueResident(filter);
+			} catch (ResidentServiceException e) {
+				assertTrue(false);
+			}
+			
+			assertEquals(result.getGivenName(), filter.getGivenName());
+			EasyMock.verify(residentRepoMock);
 		}
+		@Test
+		public void testGetUniqueResidentNonUnique(){
+			EasyMock.replay(residentRepoMock);
+			Resident result;
+			Resident notUniqueResident = new Resident("Hans", "Schopp", "Neue Straße 2", "Neustadt", new Date(1955, 1, 1));
 		
-		assertEquals(result.getGivenName(), filter.getGivenName());
-	}
-	@Test
-	public void testGetUniqueResidentNonUnique(){
-		Resident result;
-		Resident notUniqueResident = new Resident("Hans", "Schopp", "Neue Straße 2", "Neustadt", new Date(1955, 1, 1));
-	
-		try {
-			result = residentService.getUniqueResident(notUniqueResident);
-		} catch (ResidentServiceException e) {
-			assertTrue(true);
+			try {
+				result = residentService.getUniqueResident(notUniqueResident);
+			} catch (ResidentServiceException e) {
+				assertTrue(true);
+			}
+			EasyMock.verify(residentRepoMock);
 		}
-	}
 }

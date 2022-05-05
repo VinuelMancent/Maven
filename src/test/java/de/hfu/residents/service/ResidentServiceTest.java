@@ -52,9 +52,35 @@ public class ResidentServiceTest {
 	}
 	
 	@Test
-	public void testGetUniqueResidentWithWildcard()  {
+	public void testGetUniqueResidentWithWildcardStreet()  {
 		Resident result;
-		Resident residentWithWildcard = new Resident("Vin*", "mattes", "geißbühlstr. 15", "balingen", new Date(1998, 2, 10));
+		Resident residentWithWildcard = new Resident("Vincent", "mattes", "geißb*", "balingen", new Date(1998, 2, 10));
+		
+		try {
+			result = residentService.getUniqueResident(residentWithWildcard);
+		} catch (ResidentServiceException e) {
+			assertTrue(true);
+		}
+		
+	}
+	
+	@Test
+	public void testGetUniqueResidentWithWildcardPrename()  {
+		Resident result;
+		Resident residentWithWildcard = new Resident("Vin*", "mattes", "", "balingen", new Date(1998, 2, 10));
+		
+		try {
+			result = residentService.getUniqueResident(residentWithWildcard);
+		} catch (ResidentServiceException e) {
+			assertTrue(true);
+		}
+		
+	}
+	
+	@Test
+	public void testGetUniqueResidentWithWildcardSurname()  {
+		Resident result;
+		Resident residentWithWildcard = new Resident("Vincent", "matt*", "", "balingen", new Date(1998, 2, 10));
 		
 		try {
 			result = residentService.getUniqueResident(residentWithWildcard);
